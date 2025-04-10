@@ -29,7 +29,7 @@ function Signin() {
     setIsLoading(true);
     
     try {
-      const response = await axios.post("https://api.buziak.online/api/users/login", {
+      const response = await axios.post("http://api.buziak.online/api/users/login", {
         email: formData.email,
         password: formData.password
       });
