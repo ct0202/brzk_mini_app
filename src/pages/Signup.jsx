@@ -35,7 +35,7 @@ function Signup() {
 
     setIsLoading(true);
     try {
-      const response = await axios.post("http://localhost:5002/api/users/register", {
+      const response = await axios.post("https://api.buziak.online/api/users/register", {
         name: formData.name,
         phone: formData.phone,
         email: formData.email,
