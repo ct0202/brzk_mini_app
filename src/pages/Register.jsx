@@ -22,14 +22,14 @@ const Register = () => {
           alt="Logo"
           className="mx-auto w-60 drop-shadow-md"
         />
-        <img src="/assets/mockup.png" className="w-[200px]" alt="" />
+        <img src="/assets/mockup.png" className="w-[390px]" alt="" />
         <p className="text-[#90FFAD] text-sm mt-4 text-[11px]">
           • {t("register.online")} {online}
         </p>
       </div>
 
       {/* Описание */}
-      <div className="px-6 text-sm text-white/90 leading-relaxed text-center z-10 text-[12px]">
+      <div className="px-2 text-white/90 leading-relaxed text-center z-10 text-[12px]">
         <Trans
           i18nKey="register.description"
           components={{ strong: <strong className="font-semibold" /> }}

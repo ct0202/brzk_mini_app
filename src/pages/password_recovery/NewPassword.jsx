@@ -43,7 +43,6 @@ function NewPassword() {
       }
 
       setSuccess(true);
-      // Перенаправляем на страницу входа через 2 секунды
       setTimeout(() => {
         navigate('/signin');
       }, 2000);
