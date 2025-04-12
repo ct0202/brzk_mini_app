@@ -28,6 +28,16 @@ function Signin() {
     }));
   };
 
+  const handleGoogleAuth = async () => {
+    try {
+      const response = await fetch(`${API_BASE_URL}/api/auth/google`);
+      const { authUrl } = await response.json();
+      window.location.href = authUrl;
+    } catch (error) {
+      console.error('Error:', error);
+    }
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setIsLoading(true);
@@ -111,7 +121,7 @@ function Signin() {
         </button>
 
         <div className="mt-6 flex justify-center">
-          <img src="/icons/google.svg" alt="Google" />
+          <img onClick={handleGoogleAuth} src="/icons/google.svg" alt="Google" />
         </div>
 
         <div className="flex justify-center items-center flex-row absolute w-[343px] bottom-[79px]">
