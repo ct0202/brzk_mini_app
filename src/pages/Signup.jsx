@@ -55,8 +55,7 @@ function Signup() {
       });
       
       if (response.status === 200 || response.status === 201) {
-        // Обработка успешной регистрации
-        navigate('/signin');
+        navigate('/email_confirm');
       }
     } catch (error) {
       console.error('Ошибка при регистрации:', error.response?.data || error.message);

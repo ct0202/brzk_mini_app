@@ -130,7 +130,7 @@ export default function PhoneInput({ value, onChange }) {
           value={formatPhoneNumber(value?.replace(selectedCountry.prefix, '') || '')}
           onChange={handlePhoneChange}
           placeholder={t("signup.phone")}
-          className="bg-gray-100 rounded-md px-4 py-3 text-[16px] text-gray-700 flex-1"
+          className="bg-gray-100 w-rounded-md px-4 w-[214px] py-3 text-[16px] text-gray-700 flex-1"
         />
       </div>
     </div>
