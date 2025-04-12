@@ -38,11 +38,8 @@
       "title": "Odzyskaj hasło",
       "hint": "Wpisz <b>email</b> powiązany z Twoim kontem.<br/> Wyślemy Ci link do logowania.",
       "submit": "Wyślij email",
-      "success_hint": [
-        "Sprawdź swoją pocztę!",
-        "Wysłaliśmy link na ",
-        ", aby pomóc Ci ponownie zalogować się do konta. Sprawdź pocztę i postępuj zgodnie z instrukcjami."
-      ],
+      "success_hint":
+        "Sprawdź swoją pocztę!<br/>Wysłaliśmy link na, aby pomóc Ci ponownie zalogować się do konta. Sprawdź pocztę i postępuj zgodnie z instrukcjami.",
       "new_title": "Wprowadź nowe hasło",
       "new_password_placeholder": "Nowe hasło...",
       "new_submit": "Zapisz hasło"

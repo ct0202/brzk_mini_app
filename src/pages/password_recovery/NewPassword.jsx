@@ -55,7 +55,7 @@ function NewPassword() {
   useEffect(() => {
     const checkToken = async () => {
       try {
-        const response = await fetch(`http://localhost:5002/api/email/verify-reset-token/${token}`);
+        const response = await fetch(`${API_BASE_URL}/api/email/verify-reset-token/${token}`);
         const data = await response.json();
         setIsValid(data.isValid);
       } catch (error) {
