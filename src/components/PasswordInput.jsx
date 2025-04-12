@@ -6,7 +6,7 @@ export default function PasswordInput({ value, onChange }) {
   const { t } = useTranslation();
 
   return (
-    <div className="flex flex-col gap-2 mt-[20px]">
+    <div className="flex flex-col gap-2 mt-[0px]">
       <label className="text-[#121826] text-[14px] font-[500]">{t("signup.labels.password")}</label>
       <div className="bg-gray-100 rounded-[8px] px-4 py-3 flex items-center justify-between">
         <input

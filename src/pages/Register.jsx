@@ -11,24 +11,9 @@ const Register = () => {
     <div
       className="w-full h-screen bg-cover bg-center text-white relative overflow-hidden flex flex-col justify-start"
       style={{
-        backgroundImage: 'url("/backgrounds/register.png")',
+        backgroundImage: 'url("/backgrounds/register.png"), url("/backgrounds/home.png")',
       }}
     >
-      {/* Языковой переключатель */}
-      <div className="absolute top-4 right-4 z-20 flex gap-2">
-        <button
-          onClick={() => i18n.changeLanguage("pl")}
-          className="text-sm bg-black/40 px-2 py-1 rounded"
-        >
-          PL
-        </button>
-        <button
-          onClick={() => i18n.changeLanguage("ru")}
-          className="text-sm bg-black/40 px-2 py-1 rounded"
-        >
-          RU
-        </button>
-      </div>
 
       {/* Верхний логотип и онлайн статус */}
       <div className="text-center mt-12 z-10 flex flex-col justify-center items-center">
@@ -37,7 +22,7 @@ const Register = () => {
           alt="Logo"
           className="mx-auto w-60 drop-shadow-md"
         />
-        <img src="/assets/mockup.png" className="w-[280px]" alt="" />
+        <img src="/assets/mockup.png" className="w-[200px]" alt="" />
         <p className="text-[#90FFAD] text-sm mt-4 text-[11px]">
           • {t("register.online")} {online}
         </p>

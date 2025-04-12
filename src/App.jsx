@@ -8,7 +8,7 @@ import Signin from "./pages/Signin";
 import Policy from "./pages/Policy";
 import SendEmail from "./pages/password_recovery/SendEmail";
 import NewPassword from "./pages/password_recovery/NewPassword";
-
+import EmailConfirm from "./pages/EmailConfirm";
 const App = () => {
   return (
     <Router>
@@ -22,6 +22,7 @@ const App = () => {
         <Route path="/policy" element={<Policy />} />
         <Route path="/recover" element={<SendEmail />} />
         <Route path="/newPassword" element={<NewPassword />} />
+        <Route path="/email_confirm" element={<EmailConfirm />} />
       </Routes>
     </Router>
   );

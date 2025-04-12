@@ -5,6 +5,7 @@ import PasswordInput from "../components/PasswordInput";
 import PhoneInput from "../components/PhoneInput";
 import { useNavigate } from "react-router-dom";
 import axios from 'axios';
+import { API_BASE_URL } from '../config/api';
 
 function Signup() {
   const { t, i18n } = useTranslation();
@@ -29,13 +30,23 @@ function Signup() {
     }));
   };
 
+  const handleGoogleAuth = async () => {
+    try {
+      const response = await fetch(`${API_BASE_URL}/api/auth/google`);
+      const { authUrl } = await response.json();
+      window.location.href = authUrl;
+    } catch (error) {
+      console.error('Error:', error);
+    }
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!isPolicyAccepted) return;
 
     setIsLoading(true);
     try {
-      const response = await axios.post("http://api.buziak.online/api/users/register", {
+      const response = await axios.post(`${API_BASE_URL}/api/users/register`, {
         name: formData.name,
         phone: formData.phone,
         email: formData.email,
@@ -43,9 +54,9 @@ function Signup() {
         gender: formData.gender
       });
       
-      if (response.status === 200) {
+      if (response.status === 200 || response.status === 201) {
         // Обработка успешной регистрации
-        navigate('/login');
+        navigate('/signin');
       }
     } catch (error) {
       console.error('Ошибка при регистрации:', error.response?.data || error.message);
@@ -61,7 +72,7 @@ function Signup() {
       </h1>
 
       <form onSubmit={handleSubmit} className="w-full flex flex-col max-w-[343px]">
-        <div className="flex flex-col gap-2">
+        <div className="flex flex-col gap-1">
           <input
             type="text"
             name="name"
@@ -78,7 +89,7 @@ function Signup() {
           onChange={(value) => setFormData(prev => ({ ...prev, phone: value }))}
         />
 
-        <div className="flex flex-col gap-2 mt-[20px]">
+        <div className="flex flex-col gap-2 mt-[0px]">
           <label className="text-[#121826] text-[14px] font-[500]">{t("signup.labels.email")}</label>
           <input
             type="email"
@@ -123,7 +134,7 @@ function Signup() {
         </button>
 
         <div className="mt-6 flex justify-center">
-          <img src="/icons/google.svg" alt="Google" />
+          <img onClick={handleGoogleAuth} src="/icons/google.svg" alt="Google" />
         </div>
 
         <div
@@ -131,11 +142,6 @@ function Signup() {
           className="text-[14px] text-white w-[100%] text-center mt-[18px]"
           dangerouslySetInnerHTML={{ __html: t("signup.have_account") }}
         ></div>
-
-        <div className="mt-4 flex gap-2 justify-center">
-          <button onClick={() => i18n.changeLanguage("ru")}>RU</button>
-          <button onClick={() => i18n.changeLanguage("pl")}>PL</button>
-        </div>
       </form>
     </div>
   );

@@ -46,6 +46,15 @@
       "new_title": "Wprowadź nowe hasło",
       "new_password_placeholder": "Nowe hasło...",
       "new_submit": "Zapisz hasło"
+    },
+    "email_confirm": {
+      "title": "Potwierdzenie e-mail",
+      "text": [
+        "Wprowadź kod potwierdzający, który wysłaliśmy na",
+        "Nie otrzymałeś kodu?",
+        "Wyślij ponownie"
+      ],
+      "submit": "Potwierdź"
     }
   }
   

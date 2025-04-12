@@ -90,7 +90,7 @@ export default function PhoneInput({ value, onChange }) {
   };
 
   return (
-    <div className="flex flex-col gap-2 mt-[16px]">
+    <div className="flex flex-col gap-2 mt-[0px]">
       <label className="text-[#121826] text-[14px] font-[500]">{t("signup.labels.phone")}</label>
       <div className="relative flex gap-[16px]">
         <div 

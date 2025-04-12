@@ -3,10 +3,14 @@ import { useTranslation } from "react-i18next";
 import PasswordInput from "../components/PasswordInput";
 import { useNavigate } from "react-router-dom";
 import axios from 'axios';
+import { API_BASE_URL } from '../config/api';
+import { useDispatch } from 'react-redux';
+import { setUserEmail, setIsAuthenticated } from '../redux/slices/userSlice';
 
 function Signin() {
   const { t, i18n } = useTranslation();
   const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   const [formData, setFormData] = useState({
     email: '',
@@ -29,17 +33,28 @@ function Signin() {
     setIsLoading(true);
     
     try {
-      const response = await axios.post("http://api.buziak.online/api/users/login", {
+      const response = await axios.post(`${API_BASE_URL}/api/users/login`, {
         email: formData.email,
         password: formData.password
       });
       
       if (response.status === 200) {
-        // Сохраняем токен, если пользователь выбрал "Запомнить меня"
+        dispatch(setUserEmail(formData.email));
+        dispatch(setIsAuthenticated(true));
+        
         if (rememberMe && response.data.token) {
           localStorage.setItem('token', response.data.token);
         }
-        navigate('/dashboard');
+
+        // Отправляем запрос на получение кода подтверждения
+        try {
+          await axios.post(`${API_BASE_URL}/api/email/send/code`, {
+            email: formData.email
+          });
+          navigate('/email_confirm');
+        } catch (codeError) {
+          console.error('Ошибка при отправке кода:', codeError.response?.data || codeError.message);
+        }
       }
     } catch (error) {
       console.error('Ошибка при входе:', error.response?.data || error.message);
@@ -113,11 +128,6 @@ function Signin() {
           onClick={() => navigate("/recover")}
         >
           {t("signin.having_troubles")}
-        </div>
-
-        <div className="mt-4 flex gap-2 justify-center">
-          <button onClick={() => i18n.changeLanguage("ru")}>RU</button>
-          <button onClick={() => i18n.changeLanguage("pl")}>PL</button>
         </div>
       </form>
     </div>
