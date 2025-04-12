@@ -4,12 +4,15 @@ import GenderToggle from "../components/GenderToggle";
 import PasswordInput from "../components/PasswordInput";
 import PhoneInput from "../components/PhoneInput";
 import { useNavigate } from "react-router-dom";
+import { useDispatch } from 'react-redux';
+import { setUserEmail } from '../redux/slices/userSlice';
 import axios from 'axios';
 import { API_BASE_URL } from '../config/api';
 
 function Signup() {
   const { t, i18n } = useTranslation();
   const navigate = useNavigate();
+  const dispatch = useDispatch();
   
   const [formData, setFormData] = useState({
     name: '',
@@ -55,6 +58,7 @@ function Signup() {
       });
       
       if (response.status === 200 || response.status === 201) {
+        dispatch(setUserEmail(formData.email));
         navigate('/email_confirm');
       }
     } catch (error) {
