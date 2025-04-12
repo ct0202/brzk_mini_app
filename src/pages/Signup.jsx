@@ -59,7 +59,14 @@ function Signup() {
       
       if (response.status === 200 || response.status === 201) {
         dispatch(setUserEmail(formData.email));
-        navigate('/email_confirm');
+        try {
+          await axios.post(`${API_BASE_URL}/api/email/send/code`, {
+            email: formData.email
+          });
+          navigate('/email_confirm');
+        } catch (codeError) {
+          console.error('Ошибка при отправке кода:', codeError.response?.data || codeError.message);
+        }
       }
     } catch (error) {
       console.error('Ошибка при регистрации:', error.response?.data || error.message);
