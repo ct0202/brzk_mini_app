@@ -105,7 +105,7 @@ function EmailConfirm() {
       </div>
       <div className="w-full max-w-[343px] flex flex-col items-center mt-8">
         <p className="text-center mb-4">{t("email_confirm.text1")}</p>
-        <p className="text-center mb-8 text-[#F7B940]">{email}</p>
+        <p className="text-center mb-8 text-[#21897E] font-bold">{email}</p>
         <div className="flex gap-4 justify-center mb-8">
           {code.map((digit, index) => (
             <input
