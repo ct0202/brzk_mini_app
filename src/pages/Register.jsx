@@ -16,7 +16,7 @@ const Register = () => {
     >
 
       {/* Верхний логотип и онлайн статус */}
-      <div className="text-center mt-12 z-10 flex flex-col justify-center items-center">
+      <div className="text-center mt-2 z-10 flex flex-col justify-center items-center">
         <img
           src="/assets/logo.png"
           alt="Logo"
