@@ -104,7 +104,7 @@ function EmailConfirm() {
         <object data="/icons/back-arrow.svg" type="image/svg+xml" className="absolute left-[24px] cursor-pointer" onClick={() => navigate(-1)}></object>
       </div>
       <div className="w-full max-w-[343px] flex flex-col items-center mt-8">
-        <p className="text-center mb-4">{t("email_confirm.text[0]")}</p>
+        <p className="text-center mb-4">{t("email_confirm.text1")}</p>
         <p className="text-center mb-8 text-[#F7B940]">{email}</p>
         <div className="flex gap-4 justify-center mb-8">
           {code.map((digit, index) => (
@@ -122,7 +122,7 @@ function EmailConfirm() {
             />
           ))}
         </div>
-        <p className="text-center">{t("email_confirm.text[1]")} <strong>{t("email_confirm.text[2]")}</strong></p>
+        <p className="text-center">{t("email_confirm.text2")}</p>
       </div>
       <button 
         onClick={handleSubmitCode}

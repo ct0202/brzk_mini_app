@@ -46,11 +46,8 @@
     },
     "email_confirm": {
       "title": "Potwierdzenie e-mail",
-      "text": [
-        "Wprowadź kod potwierdzający, który wysłaliśmy na",
-        "Nie otrzymałeś kodu?",
-        "Wyślij ponownie"
-      ],
+      "text1": "Wprowadź kod potwierdzający, który wysłaliśmy na",
+      "text2": "Nie otrzymałeś kodu? Wyślij ponownie",
       "submit": "Potwierdź"
     }
   }
