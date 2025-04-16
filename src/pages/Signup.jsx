@@ -9,6 +9,15 @@ import { setUserEmail } from '../redux/slices/userSlice';
 import axios from 'axios';
 import { API_BASE_URL } from '../config/api';
 
+const ERROR_MESSAGES = [
+  "Номер уже зарегистрирован",
+  "Email уже зарегистрирован",
+  "Пароль слишком простой",
+  "Имя пользователя уже занято",
+  "Некорректный формат email",
+  "Некорректный формат номера телефона"
+];
+
 function Signup() {
   const { t, i18n } = useTranslation();
   const navigate = useNavigate();
@@ -24,6 +33,7 @@ function Signup() {
   
   const [isPolicyAccepted, setIsPolicyAccepted] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState("");
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -49,6 +59,13 @@ function Signup() {
 
     setIsLoading(true);
     try {
+      // Симулируем случайную ошибку
+      const randomError = Math.random() < 0.5;
+      if (randomError) {
+        const randomErrorMessage = ERROR_MESSAGES[Math.floor(Math.random() * ERROR_MESSAGES.length)];
+        throw new Error(randomErrorMessage);
+      }
+
       const response = await axios.post(`${API_BASE_URL}/api/users/register`, {
         name: formData.name,
         phone: formData.phone,
@@ -65,11 +82,11 @@ function Signup() {
           });
           navigate('/email_confirm');
         } catch (codeError) {
-          console.error('Ошибка при отправке кода:', codeError.response?.data || codeError.message);
+          setError('Ошибка при отправке кода подтверждения');
         }
       }
     } catch (error) {
-      console.error('Ошибка при регистрации:', error.response?.data || error.message);
+      setError(error.message || 'Произошла ошибка при регистрации');
     } finally {
       setIsLoading(false);
     }
@@ -80,6 +97,12 @@ function Signup() {
       <h1 className="text-2xl font-bold mb-[18px] w-[343px] text-left">
         {t("signup.title")}
       </h1>
+
+      {error && (
+        <div className="w-full max-w-[343px] mb-4 p-3 bg-red-500 text-white rounded-lg">
+          {error}
+        </div>
+      )}
 
       <form onSubmit={handleSubmit} className="w-full flex flex-col max-w-[343px]">
         <div className="flex flex-col gap-1">

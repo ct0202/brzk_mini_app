@@ -10,6 +10,9 @@ import SendEmail from "./pages/password_recovery/SendEmail";
 import NewPassword from "./pages/password_recovery/NewPassword";
 import EmailConfirm from "./pages/EmailConfirm";
 import RecoverSuccess from "./pages/password_recovery/RecoverSuccess";
+import Profile from "./pages/profile/Profile";
+import ChangeProfilePicture from "./pages/profile/ChangeProfilePicture";
+
 const App = () => {
   return (
     <Router>
@@ -25,6 +28,8 @@ const App = () => {
         <Route path="/newPassword" element={<NewPassword />} />
         <Route path="/recover/success" element={<RecoverSuccess />} />
         <Route path="/email_confirm" element={<EmailConfirm />} />
+        <Route path="/dashboard" element={<Profile />} />
+        <Route path="/dashboard/change-profile-picture" element={<ChangeProfilePicture />} />
       </Routes>
     </Router>
   );
