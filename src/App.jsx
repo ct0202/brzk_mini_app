@@ -10,8 +10,10 @@ import SendEmail from "./pages/password_recovery/SendEmail";
 import NewPassword from "./pages/password_recovery/NewPassword";
 import EmailConfirm from "./pages/EmailConfirm";
 import RecoverSuccess from "./pages/password_recovery/RecoverSuccess";
-import Profile from "./pages/profile/Profile";
+import ProfileEdit from "./pages/profile/Edit";
 import ChangeProfilePicture from "./pages/profile/ChangeProfilePicture";
+import Profile from "./pages/profile/Profile";
+import ProfileVerify from "./pages/profile/verification/Verification";
 
 const App = () => {
   return (
@@ -28,8 +30,10 @@ const App = () => {
         <Route path="/newPassword" element={<NewPassword />} />
         <Route path="/recover/success" element={<RecoverSuccess />} />
         <Route path="/email_confirm" element={<EmailConfirm />} />
-        <Route path="/dashboard" element={<Profile />} />
-        <Route path="/dashboard/change-profile-picture" element={<ChangeProfilePicture />} />
+        <Route path="/profile" element={<Profile />} />
+        <Route path="/profile/edit" element={<ProfileEdit />} />
+        <Route path="/profile/verify" element={<ProfileVerify />} />
+        <Route path="/profile/change-profile-picture" element={<ChangeProfilePicture />} />
       </Routes>
     </Router>
   );

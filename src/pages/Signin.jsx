@@ -5,7 +5,7 @@ import { useNavigate } from "react-router-dom";
 import axios from 'axios';
 import { API_BASE_URL } from '../config/api';
 import { useDispatch } from 'react-redux';
-import { setUserEmail, setIsAuthenticated } from '../redux/slices/userSlice';
+import { setUserEmail, setIsAuthenticated, setUserData } from '../redux/slices/userSlice';
 
 function Signin() {
   const { t, i18n } = useTranslation();
@@ -49,11 +49,13 @@ function Signin() {
       });
       
       if (response.status === 200) {
-        dispatch(setUserEmail(formData.email));
+        const { token, user } = response.data;
+        dispatch(setUserEmail(user.email));
         dispatch(setIsAuthenticated(true));
+        dispatch(setUserData(user));
         
-        if (rememberMe && response.data.token) {
-          localStorage.setItem('token', response.data.token);
+        if (rememberMe && token) {
+          localStorage.setItem('token', token);
         }
 
         // Отправляем запрос на получение кода подтверждения

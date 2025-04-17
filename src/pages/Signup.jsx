@@ -140,7 +140,10 @@ function Signup() {
           onChange={(e) => setFormData(prev => ({ ...prev, password: e.target.value }))}
         />
 
-        <GenderToggle />
+        <GenderToggle 
+          value={formData.gender}
+          onChange={(gender) => setFormData(prev => ({ ...prev, gender }))}
+        />
 
         <div className="flex items-center gap-2 text-xs mt-4">
           <input

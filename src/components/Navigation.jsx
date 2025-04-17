@@ -1,4 +1,4 @@
-function NavigationBar() {
+function Navigation() {
     return (
         <div className="flex w-[343px] fixed bottom-[40px] justify-between items-center">
             <object type="image/svg+xml" data='/icons/navbar/Frame.svg' className="w-[24px] h-[24px]" />
@@ -10,4 +10,4 @@ function NavigationBar() {
     );
 }
 
-export default NavigationBar;
+export default Navigation;

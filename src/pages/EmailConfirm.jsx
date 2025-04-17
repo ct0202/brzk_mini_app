@@ -51,7 +51,7 @@ function EmailConfirm() {
 
       if (response.status === 200) {
         // После успешной верификации перенаправляем пользователя
-        navigate('/dashboard');
+        navigate('/profile');
       }
     } catch (error) {
       console.error('Ошибка при верификации кода:', error.response?.data || error.message);

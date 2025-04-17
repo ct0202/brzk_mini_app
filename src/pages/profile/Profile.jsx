@@ -1,132 +1,56 @@
 import { useEffect, useState } from "react";
-import NavigationBar from "../../components/NavigationBar";
+import { useSelector } from 'react-redux';
 import { useNavigate } from "react-router-dom";
+import Navigation from "../../components/Navigation";
 
 function Profile() {
-  const navigate = useNavigate();
-  const [user, setUser] = useState({
-    username: "John Doe",
-    email: "john.doe@example.com",
-    birthday: "1990/01/01",
-    whoSeesMyProfile: "GIRL",
-    language: "PL",
-    gender: "MALE",
-    lookingFor: "GIRL",
-    onlyUsersWithPhotos: true,
-    age: 22
-  });
+    const navigate = useNavigate();
+    const userData = useSelector(state => state.user.userData);
+    console.log(userData);
 
-  const handleAgeChange = (e) => {
-    setUser({...user, age: parseInt(e.target.value)});
-  };
-
-  return (
-    <div className="w-full h-screen pt-[16px] bg-cover bg-center text-white relative overflow-hidden flex flex-col justify-start items-center" 
-    style={{
-      backgroundImage: 'url("/backgrounds/register.png")'
-    }}>
-        <div className="w-[343px]">
-          <div className="flex items-start justify-between">
-              <button className="rounded-[50%] flex items-center justify-center w-[52px] h-[52px] bg-[#FF63BBB8]">
-                <img src="/icons/back-arrow-black.svg" alt="arrow-left" className="w-[24px] h-[24px]" />
-              </button>
-              <div className="flex items-center justify-center flex-col">
-                <div className="w-[96px] h-[96px] rounded-[50%] border-[2px] border-white">
-
-                </div>
-                <button onClick={() => navigate("/dashboard/change-profile-picture")} className="bg-[#675B78] rounded-[15px] h-[30px] w-[193px] font-[14px] mt-[8px]">Change Profile Picture</button>
-              </div>
-              <button>
-                <img src="/icons/Glyph.svg"/>
-              </button>
-          </div>
-          <div className="flex items-center flex-col w-full font-[14px] mt-[43px]">
-            <div className="border-b border-white w-full py-[25px] flex items-center justify-between"> 
-              <span className="text-[#77838F]">Username</span>
-              <span>Username</span>
-            </div>
-            <div className="border-b border-white w-full py-[25px] flex items-center justify-between"> 
-              <span className="text-[#77838F]">Email</span>
-              <span>Email</span>
-            </div>
-            <div className="border-b border-white w-full py-[25px] flex items-center justify-between"> 
-              <span className="text-[#77838F]">Birthday</span>
-              <span>Birthday</span>
-            </div>
-            <div className="border-b border-white w-full py-[25px] flex items-center justify-between"> 
-              <span className="text-[#77838F]">Bla bla bla bla</span>
-              <div className="w-[120px] h-[32px] rounded-[100px] bg-[#FFFFFF66] flex flex-row items-center justify-between px-[1px]">
-                <button onClick={() => setUser({...user, whoSeesMyProfile: "ALL"})} 
-                        className={`text-[12px] w-[30px] h-[30px] rounded-[50%] 
-                        ${user.whoSeesMyProfile === "ALL" ? "bg-[#FFFFFF] text-black" : "bg-[#FFFFFF80] text-[#1B1B1BA6]"}`}>
-                  ALL
-                </button>
-                <span>:</span>
-                <button onClick={() => setUser({...user, whoSeesMyProfile: "MAN"})} 
-                        className={`text-[12px] w-[30px] h-[30px] rounded-[50%]
-                        ${user.whoSeesMyProfile === "MAN" ? "bg-[#3C8AFF] text-black" : " bg-[#FFFFFF80] text-[#1B1B1BA6] "}`}>
-                  MAN
-                </button>
-                <span>:</span>
-                <button onClick={() => setUser({...user, whoSeesMyProfile: "GIRL"})} 
-                        className={`text-[12px] w-[30px] h-[30px] rounded-[50%] 
-                        ${user.whoSeesMyProfile === "GIRL" ? "bg-[#FF94D1] text-black" : "bg-[#FFFFFF80] text-[#1B1B1BA6] "}`}>
-                  GIRL
-                </button>
-              </div>
-            </div>
-            <div className="border-b border-white w-full py-[25px] flex items-center justify-between"> 
-              <span className="text-[#77838F]">Bla bla bla bla</span>
-              <div className="w-[81px] h-[32px] rounded-[100px] bg-[#FFFFFF66] flex flex-row items-center justify-between px-[1px]">
-                <button onClick={() => setUser({...user, language: "EN"})} 
-                        className={`text-[12px] w-[30px] h-[30px] rounded-[50%] 
-                        ${user.language === "EN" ? "bg-[#FFFFFF] text-black" : "bg-[#FFFFFF80] text-[#1B1B1BA6]"}`}>
-                  EN
-                </button>
-                <span>:</span>
-                <button onClick={() => setUser({...user, language: "PL"})} 
-                        className={`text-[12px] w-[30px] h-[30px] rounded-[50%]
-                        ${user.language === "PL" ? "bg-[#FFFFFF] text-black" : " bg-[#FFFFFF80] text-[#1B1B1BA6] "}`}>
-                  PL
-                </button>
-              </div>
-            </div>
-            <div className="border-b border-white w-full py-[25px] flex items-center justify-between"> 
-              <span className="text-[#77838F]">Bla bla bla bla</span>
-              <button onClick={() => setUser({...user, onlyUsersWithPhotos: !user.onlyUsersWithPhotos})}>
-                {user.onlyUsersWithPhotos ? <img src="/icons/Checkbox.svg"/> : <div className="w-[24px] h-[24px] rounded-[5px] border border-white"/>}
-              </button>
-            </div>
-          </div>
-          <div className="w-full py-[25px] flex flex-col gap-2">
-              <div className="flex justify-center items-center">
-                <span className="text-white">{user.age} года</span>
-              </div>
-              <div className="relative w-full h-[6px] bg-[#EAEDF0]">
-                <div className="absolute left-0 top-1/2 transform -translate-y-1/2 w-[13px] h-[13px] rounded-full bg-[#FF63BB] -ml-[6px]" />
-                <div className="absolute right-0 top-1/2 transform -translate-y-1/2 w-[13px] h-[13px] rounded-full bg-[#EAEDF0] -mr-[6px]" />
-                <input
-                  type="range"
-                  min="18"
-                  max="99"
-                  value={user.age}
-                  onChange={handleAgeChange}
-                  className="absolute w-full h-[6px] appearance-none bg-transparent [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:w-6 [&::-webkit-slider-thumb]:h-6 [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-[#FF63BB] [&::-webkit-slider-thumb]:cursor-pointer [&::-moz-range-thumb]:w-6 [&::-moz-range-thumb]:h-6 [&::-moz-range-thumb]:rounded-full [&::-moz-range-thumb]:bg-[#FF63BB] [&::-moz-range-thumb]:border-none [&::-moz-range-thumb]:cursor-pointer"
-                />
-                <div 
-                  className="absolute h-full bg-[#FF63BB]" 
-                  style={{width: `${((user.age - 18) / (99 - 18)) * 100}%`}}
-                />
-              </div>
-              <div className="flex justify-between text-xs text-white/50">
-                <span>18</span>
-                <span>99</span>
-              </div>
+    return (
+        <div className="w-full h-screen bg-cover bg-center" style={{ backgroundImage: `url(${'/backgrounds/register.png'})` }}>
+            <div className="w-[373px] h-[343px] flex flex-col justify-center items-center">
+                {userData && (
+                    <>
+                        <div className="w-full flex flex-row justify-between pl-[16px] pr-[16px] pt-[80px]">
+                            <div className="w-[64px] h-[40px] bg-[#FFFFFF1A] rounded-[48px] flex flex-row items-center justify-center">
+                                <img src="/icons/profile/coin.svg" alt="coin" className="w-[22px] h-[16px]" />
+                                <span className="text-white text-[15px] font-medium pl-[4px]">999</span>
+                            </div>
+                            <div className="relative flex-col flex items-center justify-center">
+                                <div className="w-[160px] h-[160px] rounded-[50%] bg-[#FFFFFF1A]">
+                                    {userData.photo ? <img src={userData.photo} className="w-full h-full rounded-[50%]"/> : <></>}
+                                </div>
+                                <button onClick={() => navigate("/profile/edit")} className="bg-[#3D1226] w-[40px] h-[40px] rounded-[50%] absolute top-[10px] right-[10px] flex items-center justify-center">
+                                    <img src="/icons/profile/settings.svg" alt="settings" className="w-[20px] h-[20px]" />
+                                </button>
+                                <div className="flex flex-row items-center justify-center mt-[9px] gap-[7px]">
+                                    <div className="w-[68px] h-[26px] rounded-[40px] bg-gradient-to-r from-[#9C4DFF] to-[#FF40AC]">
+                                    </div>
+                                    <img src="/icons/profile/edit.svg" alt="edit" className="w-[15px] h-[15px]" />
+                                </div>
+                                <div className="flex flex-row items-center justify-center gap-[10px] mt-[15px]">
+                                    <span className="text-white text-[20px] font-medium">{userData.name}, {userData.age}</span>
+                                    <img src="/icons/profile/question-mark.svg" alt="question-mark" className="w-[25px] h-[25px]" />
+                                </div>
+                            </div>
+                            <div className="w-[40px] h-[40px] rounded-[50%] bg-[#FFFFFF1A] flex flex-row items-center justify-center">
+                                <img src="/icons/profile/notifications.svg" alt="notifications" className="w-[20px] h-[20px]" />
+                            </div>
+                        </div>
+                        <div className="w-full flex flex-row justify-between pl-[16px] pr-[16px] mt-[25px]">
+                            <div className="w-full h-[118px] bg-[#675B78] rounded-[32px] relative">
+                                <p className="text-left w-full text-[#FFFFFFB2] text-[14px]">{userData.description}</p>
+                                <img src="/icons/profile/edit.svg" alt="edit" className="w-[15px] h-[15px] absolute bottom-[16px] right-[16px]"/>
+                            </div>
+                        </div>
+                    </>
+                )}
+                <Navigation/>
             </div>
         </div>
-        <NavigationBar />
-    </div>
-  );
+    );
 }
 
 export default Profile;
