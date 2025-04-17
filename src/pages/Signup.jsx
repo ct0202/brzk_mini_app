@@ -60,11 +60,11 @@ function Signup() {
     setIsLoading(true);
     try {
       // Симулируем случайную ошибку
-      const randomError = Math.random() < 0.5;
-      if (randomError) {
-        const randomErrorMessage = ERROR_MESSAGES[Math.floor(Math.random() * ERROR_MESSAGES.length)];
-        throw new Error(randomErrorMessage);
-      }
+      // const randomError = Math.random() < 0.5;
+      // if (randomError) {
+      //   const randomErrorMessage = ERROR_MESSAGES[Math.floor(Math.random() * ERROR_MESSAGES.length)];
+      //   throw new Error(randomErrorMessage);
+      // }
 
       const response = await axios.post(`${API_BASE_URL}/api/users/register`, {
         name: formData.name,
@@ -73,13 +73,16 @@ function Signup() {
         password: formData.password,
         gender: formData.gender
       });
-      
+
       if (response.status === 200 || response.status === 201) {
         dispatch(setUserEmail(formData.email));
         try {
           await axios.post(`${API_BASE_URL}/api/email/send/code`, {
             email: formData.email
           });
+          
+          
+          
           navigate('/email_confirm');
         } catch (codeError) {
           setError('Ошибка при отправке кода подтверждения');

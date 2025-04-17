@@ -35,9 +35,9 @@ const userSlice = createSlice({
       // Сохраняем в localStorage при обновлении
       try {
         localStorage.setItem('userData', JSON.stringify(action.payload));
-        if (action.payload.id) {
-          state.userId = action.payload.id;
-          localStorage.setItem('userId', action.payload.id);
+        if (action.payload._id) {
+          state.userId = action.payload._id;
+          localStorage.setItem('userId', action.payload._id);
         }
       } catch (err) {
         console.error('Ошибка при сохранении в localStorage:', err);

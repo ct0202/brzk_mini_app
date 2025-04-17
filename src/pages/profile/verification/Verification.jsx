@@ -23,7 +23,7 @@ function Verification() {
                         <span className="text-[24px] mt-[34px]">Verify profile</span>
                         <p className="w-[279px] text-[14px] text-center mt-[40px]">Докажи,что ты являешься человеком со своего профиля, отправив фото. Если все совпадет - ты получишь верификацию</p>
                         <img onClick={() => setReady(true)} src="/icons/profile/im-ready-button.svg" alt="im-ready" className="w-[279px] h-[39px] mt-[12px]"/>
-                        <img onClick={() => navigate('/profile')} src="/icons/profile/later-button.svg" alt="later" className="w-[279px] h-[39px] mt-[7px]"/>
+                        <img onClick={() => navigate('/profile/edit')} src="/icons/profile/later-button.svg" alt="later" className="w-[279px] h-[39px] mt-[7px]"/>
                     </div>
                 </div>
             </div>
