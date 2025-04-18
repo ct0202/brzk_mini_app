@@ -57,7 +57,7 @@ function Signin() {
         if (rememberMe && token) {
           localStorage.setItem('token', token);
         }
-
+        
         // Отправляем запрос на получение кода подтверждения
         try {
           await axios.post(`${API_BASE_URL}/api/email/send/code`, {

@@ -1,37 +1,212 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import Navigation from "../../components/Navigation";
 import { useNavigate } from "react-router-dom";
 import { useSelector } from 'react-redux';
+import axios from 'axios';
+import { API_BASE_URL } from '../../config/api';
 
 function Edit() {
   const navigate = useNavigate();
   const userData = useSelector(state => state.user.userData);
+  const [fullUserData, setFullUserData] = useState(null);
   const [user, setUser] = useState({
-    username: userData?.name || "",
-    email: userData?.email || "",
-    birthday: "1990/01/01",
-    whoSeesMyProfile: "GIRL",
-    language: "PL",
-    gender: userData?.gender || "MALE",
-    lookingFor: "GIRL",
-    onlyUsersWithPhotos: true,
-    age: 22
+    username: "",
+    email: "",
+    gender: "",
+    whoSeesMyProfile: "",
+    language: "",
+    birthDay: ""
   });
+  const [ageTimeout, setAgeTimeout] = useState(null);
 
-  useEffect(() => {
-    if (userData) {
-      setUser(prev => ({
-        ...prev,
-        username: userData.name,
-        email: userData.email,
-        gender: userData.gender
-      }));
+  const formatDate = (dateString) => {
+    if (!dateString) return '';
+    const date = new Date(dateString);
+    const day = date.getDate().toString().padStart(2, '0');
+    const month = (date.getMonth() + 1).toString().padStart(2, '0');
+    const year = date.getFullYear();
+    return `${day}/${month}/${year}`;
+  };
+
+  const getDaysInMonth = (month, year) => {
+    return new Date(year, month, 0).getDate();
+  };
+
+  const formatDateForInput = (dateString) => {
+    if (!dateString) return { day: '1', month: '1', year: '2000' };
+    const date = new Date(dateString);
+    return {
+      day: date.getDate().toString(),
+      month: (date.getMonth() + 1).toString(),
+      year: date.getFullYear().toString()
+    };
+  };
+
+  const handleBirthdayChange = async (type, value) => {
+    const currentDate = formatDateForInput(user.birthDay);
+    let newDay = parseInt(currentDate.day);
+    let newMonth = parseInt(currentDate.month);
+    let newYear = parseInt(currentDate.year);
+
+    switch(type) {
+      case 'day':
+        newDay = parseInt(value);
+        break;
+      case 'month':
+        newMonth = parseInt(value);
+        const daysInNewMonth = getDaysInMonth(newMonth, newYear);
+        if (newDay > daysInNewMonth) {
+          newDay = daysInNewMonth;
+        }
+        break;
+      case 'year':
+        newYear = parseInt(value);
+        break;
     }
-  }, [userData]);
+
+    const newDate = new Date(newYear, newMonth - 1, newDay);
+    const isoString = newDate.toISOString();
+    console.log('Sending birthday to server:', isoString);
+    
+    try {
+      const response = await saveChanges({ birthDay: isoString });
+      console.log('Server response after birthday update:', response);
+      setUser(prev => ({...prev, birthDay: isoString}));
+    } catch (error) {
+      console.error('Error updating birthday:', error);
+    }
+  };
 
   const handleAgeChange = (e) => {
-    setUser({...user, age: parseInt(e.target.value)});
+    const newAge = parseInt(e.target.value);
+    setUser(prev => ({...prev, age: newAge}));
+    
+    // Очищаем предыдущий таймаут
+    if (ageTimeout) {
+      clearTimeout(ageTimeout);
+    }
+    
+    // Устанавливаем новый таймаут
+    const timeout = setTimeout(() => {
+      saveChanges({ age: newAge });
+    }, 500); // Задержка 500мс
+    
+    setAgeTimeout(timeout);
   };
+
+  const handleWhoSeesMyProfileChange = async (value) => {
+    setUser(prev => ({...prev, whoSeesMyProfile: value}));
+    await saveChanges({ whoSeesMyProfile: value });
+  };
+
+  const handleLanguageChange = async (value) => {
+    setUser(prev => ({...prev, language: value}));
+    await saveChanges({ language: value });
+  };
+
+  const handleLookingForChange = async (value) => {
+    setUser(prev => ({...prev, lookingFor: value}));
+    await saveChanges({ lookingFor: value });
+  };
+
+  const handleOnlyUsersWithPhotosChange = async (value) => {
+    setUser(prev => ({...prev, onlyUsersWithPhotos: value}));
+    await saveChanges({ showOnlyWithPhoto: value });
+  };
+
+  const saveChanges = async (changes) => {
+    try {
+      const response = await axios.put(`${API_BASE_URL}/api/profile`, {
+        userId: userData._id,
+        ...changes
+      });
+
+      if (response.status === 200) {
+        setFullUserData(prev => ({
+          ...prev,
+          ...changes
+        }));
+      }
+    } catch (error) {
+      console.error('Ошибка при сохранении изменений:', error);
+    }
+  };
+
+  useEffect(() => {
+    const fetchUserData = async () => {
+        if (!userData) {
+            navigate('/signin');
+        } else {
+            try {
+                const response = await axios.get(`${API_BASE_URL}/api/profile?userId=${userData._id}`);
+                console.log('Birthday from server:', response.data.birthDay);
+                console.log('Full user data:', response.data);
+                setFullUserData(response.data);
+                setUser(prev => ({
+                  ...prev,
+                  username: userData.name,
+                  email: userData.email,
+                  gender: userData.gender,
+                  whoSeesMyProfile: response.data?.whoSeesMyProfile || "ALL",
+                  language: response.data?.language || "PL",
+                  gender: response.data?.gender || "MALE",
+                  lookingFor: response.data?.lookingFor || "GIRL",
+                  onlyUsersWithPhotos: response.data?.showOnlyWithPhoto,
+                  age: response.data?.age || 22,
+                  birthDay: response.data?.birthDay || ''
+                }));
+                // Запрашиваем геолокацию только если координаты не указаны
+                if (!response.data.latitude || !response.data.longitude) {
+                    if (navigator.geolocation) {
+                        console.log('asking position')
+                        navigator.geolocation.getCurrentPosition(
+                            async (position) => {
+                                try {
+                                    // Отправляем координаты на сервер
+                                    await axios.post(`${API_BASE_URL}/api/profile/location`, {
+                                        userId: response.data._id,
+                                        latitude: position.coords.latitude,
+                                        longitude: position.coords.longitude
+                                    });
+                                } catch (error) {
+                                    console.error('Ошибка при сохранении геолокации:', error);
+                                }
+                            },
+                            (error) => {
+                                console.error('Ошибка при получении геолокации:', error);
+                            },
+                            {
+                                enableHighAccuracy: true,
+                                timeout: 5000,
+                                maximumAge: 0
+                            }
+                        );
+                    }
+                }
+            } catch (error) {
+                console.error('Ошибка при получении данных пользователя:', error);
+            }
+        }
+    };
+
+    fetchUserData();
+  }, [userData, navigate]);
+
+  // Очищаем таймаут при размонтировании компонента
+  useEffect(() => {
+    return () => {
+      if (ageTimeout) {
+        clearTimeout(ageTimeout);
+      }
+    };
+  }, [ageTimeout]);
+
+  // Генерируем массивы для селектов
+  const years = Array.from({length: 100}, (_, i) => new Date().getFullYear() - i);
+  const months = Array.from({length: 12}, (_, i) => i + 1);
+  const currentDate = formatDateForInput(user.birthDay);
+  const daysInMonth = getDaysInMonth(parseInt(currentDate.month), parseInt(currentDate.year));
+  const days = Array.from({length: daysInMonth}, (_, i) => i + 1);
 
   return (
     <div className="w-full h-screen pt-[16px] bg-cover bg-center text-white relative overflow-hidden flex flex-col justify-start items-center" 
@@ -45,45 +220,77 @@ function Edit() {
               </button>
               <div className="flex items-center justify-center flex-col">
                 <div className="w-[96px] h-[96px] rounded-[50%] border-[2px] border-white">
-                  {userData?.profilePicture && (
-                    <img src={userData.profilePicture} alt="Profile" className="w-full h-full rounded-full object-cover" />
-                  )}
+                {fullUserData?.photoUrls[0] !== null ? <img src={fullUserData?.photoUrls[0]?.url} className="w-full h-full object-cover rounded-[50%]"/> : <></>}
                 </div>
                 <button onClick={() => navigate("/profile/change-profile-picture")} className="bg-[#675B78] rounded-[15px] h-[30px] w-[193px] font-[14px] mt-[8px]">Change Profile Picture</button>
               </div>
-              <button>
-                <img src="/icons/Glyph.svg"/>
+              <button onClick={() => navigate('/profile')}>
+                <img src="/icons/Glyph.svg" alt="back"/>
               </button>
           </div>
-          <div className="flex items-center flex-col w-full font-[14px] mt-[43px]">
+          <div className="flex items-center flex-col w-full font-[14px] mt-[10px]">
             <div className="border-b border-white w-full py-[25px] flex items-center justify-between"> 
               <span className="text-[#77838F]">Username</span>
-              <span>{user.username}</span>
+              <span>{fullUserData?.name}</span>
             </div>
             <div className="border-b border-white w-full py-[25px] flex items-center justify-between"> 
               <span className="text-[#77838F]">Email</span>
-              <span>{user.email}</span>
+              <span>{fullUserData?.email}</span>
             </div>
             <div className="border-b border-white w-full py-[25px] flex items-center justify-between"> 
               <span className="text-[#77838F]">Birthday</span>
-              <span>{user.birthday}</span>
+              <div className="flex gap-2">
+                <select
+                  value={formatDateForInput(user.birthDay).day}
+                  onChange={(e) => handleBirthdayChange('day', e.target.value)}
+                  className="bg-transparent text-white text-center w-[50px] focus:outline-none"
+                >
+                  {days.map(day => (
+                    <option key={day} value={day} className="bg-[#675B78]">
+                      {day.toString().padStart(2, '0')}
+                    </option>
+                  ))}
+                </select>
+                <select
+                  value={formatDateForInput(user.birthDay).month}
+                  onChange={(e) => handleBirthdayChange('month', e.target.value)}
+                  className="bg-transparent text-white text-center w-[50px] focus:outline-none"
+                >
+                  {months.map(month => (
+                    <option key={month} value={month} className="bg-[#675B78]">
+                      {month.toString().padStart(2, '0')}
+                    </option>
+                  ))}
+                </select>
+                <select
+                  value={formatDateForInput(user.birthDay).year}
+                  onChange={(e) => handleBirthdayChange('year', e.target.value)}
+                  className="bg-transparent text-white text-center w-[70px] focus:outline-none"
+                >
+                  {years.map(year => (
+                    <option key={year} value={year} className="bg-[#675B78]">
+                      {year}
+                    </option>
+                  ))}
+                </select>
+              </div>
             </div>
             <div className="border-b border-white w-full py-[25px] flex items-center justify-between"> 
-              <span className="text-[#77838F]">Bla bla bla bla</span>
+              <span className="text-[#77838F]">Who sees my profile</span>
               <div className="w-[120px] h-[32px] rounded-[100px] bg-[#FFFFFF66] flex flex-row items-center justify-between px-[1px]">
-                <button onClick={() => setUser({...user, whoSeesMyProfile: "ALL"})} 
+                <button onClick={() => handleWhoSeesMyProfileChange("ALL")} 
                         className={`text-[12px] w-[30px] h-[30px] rounded-[50%] 
                         ${user.whoSeesMyProfile === "ALL" ? "bg-[#FFFFFF] text-black" : "bg-[#FFFFFF80] text-[#1B1B1BA6]"}`}>
                   ALL
                 </button>
                 <span>:</span>
-                <button onClick={() => setUser({...user, whoSeesMyProfile: "MAN"})} 
+                <button onClick={() => handleWhoSeesMyProfileChange("MAN")} 
                         className={`text-[12px] w-[30px] h-[30px] rounded-[50%]
                         ${user.whoSeesMyProfile === "MAN" ? "bg-[#3C8AFF] text-black" : " bg-[#FFFFFF80] text-[#1B1B1BA6] "}`}>
                   MAN
                 </button>
                 <span>:</span>
-                <button onClick={() => setUser({...user, whoSeesMyProfile: "GIRL"})} 
+                <button onClick={() => handleWhoSeesMyProfileChange("GIRL")} 
                         className={`text-[12px] w-[30px] h-[30px] rounded-[50%] 
                         ${user.whoSeesMyProfile === "GIRL" ? "bg-[#FF94D1] text-black" : "bg-[#FFFFFF80] text-[#1B1B1BA6] "}`}>
                   GIRL
@@ -93,13 +300,13 @@ function Edit() {
             <div className="border-b border-white w-full py-[25px] flex items-center justify-between"> 
               <span className="text-[#77838F]">Language</span>
               <div className="w-[81px] h-[32px] rounded-[100px] bg-[#FFFFFF66] flex flex-row items-center justify-between px-[1px]">
-                <button onClick={() => setUser({...user, language: "EN"})} 
+                <button onClick={() => handleLanguageChange("EN")} 
                         className={`text-[12px] w-[30px] h-[30px] rounded-[50%] 
                         ${user.language === "EN" ? "bg-[#FFFFFF] text-black" : "bg-[#FFFFFF80] text-[#1B1B1BA6]"}`}>
                   EN
                 </button>
                 <span>:</span>
-                <button onClick={() => setUser({...user, language: "PL"})} 
+                <button onClick={() => handleLanguageChange("PL")} 
                         className={`text-[12px] w-[30px] h-[30px] rounded-[50%]
                         ${user.language === "PL" ? "bg-[#FFFFFF] text-black" : " bg-[#FFFFFF80] text-[#1B1B1BA6] "}`}>
                   PL
@@ -108,7 +315,7 @@ function Edit() {
             </div>
             <div className="border-b border-white w-full py-[25px] flex items-center justify-between"> 
               <span className="text-[#77838F]">Only users with photos</span>
-              <button onClick={() => setUser({...user, onlyUsersWithPhotos: !user.onlyUsersWithPhotos})}>
+              <button onClick={() => handleOnlyUsersWithPhotosChange(!user.onlyUsersWithPhotos)}>
                 {user.onlyUsersWithPhotos ? <img src="/icons/Checkbox.svg"/> : <div className="w-[24px] h-[24px] rounded-[5px] border border-white"/>}
               </button>
             </div>
